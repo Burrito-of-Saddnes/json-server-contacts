@@ -1,17 +1,29 @@
 import React from 'react';
+import { Provider } from 'mobx-react';
+import { BrowserRouter } from 'react-router-dom';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { RootStore } from './stores/RootStore';
+
+import App from './components/App';
+
+import "./css/App.css"
+import './css/index.css';
+
+declare global {
+  interface Window { rootState: RootStore }
+}
+
+const ROOT_STORE_INSTANCE = window.rootState = new RootStore()
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider {...ROOT_STORE_INSTANCE}>
+    <BrowserRouter>
+      <App/>
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
