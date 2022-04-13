@@ -4,6 +4,8 @@ import Lists from "./Lists";
 import { inject, observer } from 'mobx-react';
 import ModalWindowStatusStore from "../stores/ModalWindowStatusStore";
 import { ModalWindowStatus } from "../utils/ModalWindowStatus";
+import LogInStatusStore from "../stores/LogInStatusStore";
+import { LogInStatus } from "../utils/LogInStatus"
 
 interface alldata_args {
   id: string;
@@ -14,6 +16,7 @@ interface alldata_args {
 interface AppProps {
   modalWindowStatusStore?: ModalWindowStatusStore;
   modalWindowStatus?: ModalWindowStatus;
+  logInStatusStore?: LogInStatusStore;
 }
 
 interface AppState {
@@ -25,7 +28,7 @@ interface AppState {
   }
 }
 
-@inject("modalWindowStatusStore")
+@inject("modalWindowStatusStore", "logInStatusStore")
 @observer
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
@@ -144,8 +147,9 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   render() {
+    const { logInStatusStore } = this.props
     const listTable = this.state.loading ? (
-      <span>Loading...</span>
+      <span>Launch json-server in console</span>
     ) : (
       <Lists
         handleUpdateOpen={this.handleUpdateOpen}
@@ -155,20 +159,35 @@ class App extends React.Component<AppProps, AppState> {
         deleteList={this.deleteList}
         handleChange={this.handleChange}
       />
-    );
+    )
     return (
-      <div className="container">
-        <span className="name-bar">
-          <CreateList
-            handleCreateOpen={this.handleCreateOpen}
-            singledata={this.state.singledata}
-            createList={this.createList}
-            handleChange={this.handleChange}
-          />
-        </span>
-        <br />
-        {listTable}
-      </div>
+      <>
+      {logInStatusStore?.logInStatus === LogInStatus.LOGIN &&
+        <div className="container">
+          <span className="name-bar">
+            <CreateList
+              handleCreateOpen={this.handleCreateOpen}
+              singledata={this.state.singledata}
+              createList={this.createList}
+              handleChange={this.handleChange}
+            />
+          </span>
+          <br />
+          {listTable}
+        </div>
+      }
+      {logInStatusStore?.logInStatus === LogInStatus.LOGOUT && 
+        <div className="LogIn">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={logInStatusStore?.triggerLogIn}
+          >
+            LogIn
+          </button>
+        </div>
+      }
+      </>
     );
   }
 }

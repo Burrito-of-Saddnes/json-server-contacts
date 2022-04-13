@@ -25,3 +25,9 @@
   flex-direction: column;
   align-items: center;
 }
+
+.LogIn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
